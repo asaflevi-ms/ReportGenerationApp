@@ -2,13 +2,14 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-
 namespace ReportGenerationApp.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly TokenService _tokenService;
+        private const string Scope = "https://hls-repgen.azure-test.net/.default";
+        private const string DraftReportPath = "radiology/generate-draft-report";
 
         public IndexModel(IHttpClientFactory httpClientFactory, TokenService tokenService)
         {
@@ -29,6 +30,7 @@ namespace ReportGenerationApp.Pages
             if (JsonFile == null || JsonFile.Length == 0)
             {
                 ModelState.AddModelError(string.Empty, "Please upload a valid JSON file.");
+                ResponseJson = "Please upload a valid JSON file.";
                 return Page();
             }
 
@@ -48,6 +50,7 @@ namespace ReportGenerationApp.Pages
             if (string.IsNullOrEmpty(InputJson))
             {
                 ModelState.AddModelError(string.Empty, "Please upload a valid JSON file first.");
+                ResponseJson = "Please upload a valid JSON file first.";
                 return Page();
             }
 
@@ -55,15 +58,16 @@ namespace ReportGenerationApp.Pages
             {
                 using var content = new StringContent(InputJson, System.Text.Encoding.UTF8, "application/json");
 
-                var client = _httpClientFactory.CreateClient();
+                var client = _httpClientFactory.CreateClient("ReportGenerationClient");
 
                 // Acquire the token using TokenService
-                var token = await _tokenService.GetTokenAsync(new[] { "https://hls-repgen.azure-test.net/.default" });
+                var token = await _tokenService.GetTokenAsync(new[] { Scope });
 
                 // Add the Bearer token to the request headers
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                var response = await client.PostAsync("https://reportgeneration.dev.workspace.mshapis.com/radiology/generate-draft-report", content);
+                // Use the relative path for the request
+                var response = await client.PostAsync(DraftReportPath, content);
 
                 ResponseJson = await response.Content.ReadAsStringAsync();
             }
@@ -75,7 +79,7 @@ namespace ReportGenerationApp.Pages
             // Format the JSON indenting
             var jsonDocument = JsonDocument.Parse(ResponseJson);
             ResponseJson = JsonSerializer.Serialize(jsonDocument, new JsonSerializerOptions { WriteIndented = true });
-            
+
             return Page();
         }
 

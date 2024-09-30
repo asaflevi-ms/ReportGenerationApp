@@ -2,7 +2,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient();
+
+// Configure HttpClient with base address
+builder.Services.AddHttpClient("ReportGenerationClient", client =>
+{
+    client.BaseAddress = new Uri("https://reportgeneration.test.workspace.mshapis.com/");
+});
+
 builder.Services.AddSingleton<TokenService>();
 
 var app = builder.Build();
