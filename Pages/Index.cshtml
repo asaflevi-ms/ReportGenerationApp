@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <form method="post" asp-page-handler="GenerateDraftReport">
+    <form method="post" asp-page-handler="GenerateDraftReport" onsubmit="showSpinner()">
         <button type="submit">Generate Draft Report</button>
     </form>
 
@@ -30,6 +30,8 @@
         <button type="submit">Clear</button>
     </form>
 }
+
+<div id="spinner" class="spinner" style="display: none;"></div>
 
 <style>
     .splitter {
@@ -51,4 +53,25 @@
         max-width: 120ch; /* 120 characters */
         overflow-wrap: break-word;
     }
+    .spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0, 0, 0, 0.1);
+        border-top: 5px solid #000;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @@keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
 </style>
+
+<script>
+    function showSpinner() {
+        document.getElementById('spinner').style.display = 'block';
+    }
+</script>
