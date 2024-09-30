@@ -5,13 +5,50 @@
 }
 
 <h1>Upload Request (Json) File</h1>
-<form method="post" enctype="multipart/form-data">
-    <input type="file" name="jsonFile" />
-    <button type="submit">Upload</button>
+<form method="post" enctype="multipart/form-data" asp-page-handler="Upload" id="uploadForm">
+    <input type="file" name="JsonFile" onchange="document.getElementById('uploadForm').submit();" />
 </form>
 
-@if (Model.ResponseContent != null)
+@if (Model.InputJson != null || Model.ResponseJson != null)
 {
-    <h2>Response</h2>
-    <pre>@Model.ResponseContent</pre>
+    <div class="splitter">
+        <div class="splitter-left">
+            <h2>Input JSON</h2>
+            <pre>@Model.InputJson</pre>
+        </div>
+        <div class="splitter-right">
+            <h2>Response JSON</h2>
+            <pre>@Model.ResponseJson</pre>
+        </div>
+    </div>
+
+    <form method="post" asp-page-handler="GenerateDraftReport">
+        <button type="submit">Generate Draft Report</button>
+    </form>
+
+    <form method="post" asp-page-handler="Clear">
+        <button type="submit">Clear</button>
+    </form>
 }
+
+<style>
+    .splitter {
+        display: flex;
+        justify-content: space-between;
+    }
+    .splitter-left, .splitter-right {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 5px;
+        text-align: left;
+    }
+    .splitter-left {
+        border-right: none;
+    }
+    pre {
+        white-space: pre-wrap;
+        max-width: 120ch; /* 120 characters */
+        overflow-wrap: break-word;
+    }
+</style>

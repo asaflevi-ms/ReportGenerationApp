@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Net.Http;
-using System.Threading.Tasks;
+
 
 namespace ReportGenerationApp.Pages
 {
@@ -19,9 +18,12 @@ namespace ReportGenerationApp.Pages
         [BindProperty]
         public IFormFile JsonFile { get; set; }
 
-        public string ResponseContent { get; set; }
+        [TempData]
+        public string InputJson { get; set; }
+        [TempData]
+        public string ResponseJson { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostUploadAsync()
         {
             if (JsonFile == null || JsonFile.Length == 0)
             {
@@ -30,8 +32,21 @@ namespace ReportGenerationApp.Pages
             }
 
             using var stream = JsonFile.OpenReadStream();
-            using var content = new StreamContent(stream);
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            using var reader = new StreamReader(stream);
+            InputJson = await reader.ReadToEndAsync();
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostGenerateDraftReportAsync()
+        {
+            if (string.IsNullOrEmpty(InputJson))
+            {
+                ModelState.AddModelError(string.Empty, "Please upload a valid JSON file first.");
+                return Page();
+            }
+
+            using var content = new StringContent(InputJson, System.Text.Encoding.UTF8, "application/json");
 
             var client = _httpClientFactory.CreateClient();
 
@@ -43,8 +58,15 @@ namespace ReportGenerationApp.Pages
 
             var response = await client.PostAsync("https://reportgeneration.dev.workspace.mshapis.com/radiology/generate-draft-report", content);
 
-            ResponseContent = $"Status Code: {response.StatusCode}\n\n{await response.Content.ReadAsStringAsync()}";
+            ResponseJson = await response.Content.ReadAsStringAsync();
 
+            return Page();
+        }
+
+        public IActionResult OnPostClear()
+        {
+            InputJson = null;
+            ResponseJson = null;
             return Page();
         }
 

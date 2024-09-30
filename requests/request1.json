@@ -1,0 +1,118 @@
+{
+    "orderInfo": [
+        {
+            "procedures": [
+                {
+                    "description": "MRLumbarSpineWcontrast",
+                    "procedureCode": {
+                        "code": "MRLumbarSpineWcontrast"
+                    }
+                }
+            ],
+            "reasonForStudy": [
+                "dummy_string"
+            ]
+        }
+    ],
+    "examInfo": {
+        "examDate": "2000-09-01T00:00:00"
+    },
+    "patient": {
+        "biologicalSex": "unspecified",
+        "dateOfBirth": "1951-09-01"
+    },
+    "template": {
+        "sections": [
+            {
+                "id": "section_1",
+                "title": "Technique",
+                "sectionType": "technique",
+                "content": {
+                    "text": "Multiplanar, multisequence imaging of the lumbar spine was performed without the administration of intravenous contrast material."
+                },
+                "isOptional": false
+            },
+            {
+                "id": "findings",
+                "title": "Findings",
+                "sectionType": "findings",
+                "innerSections": [
+                    {
+                        "id": "finding_1",
+                        "title": "Vertebral Bodies",
+                        "content": {
+                            "text": "The lumbar vertebral bodies are normal in height, alignment, and signal intensity. There is no evidence of compression fracture, bone marrow edema, or pathologic lesion."
+                        },
+                        "isOptional": false
+                    },
+                    {
+                        "id": "finding_2",
+                        "title": "Intervertebral Discs",
+                        "content": {
+                            "text": "The intervertebral discs demonstrate normal height and signal intensity for the patient's age. There is no evidence of disc herniation, bulge, or degenerative disc disease."
+                        },
+                        "isOptional": false
+                    },
+                    {
+                        "id": "finding_3",
+                        "title": "Spinal Canal and Neural Foramina",
+                        "content": {
+                            "text": "The spinal canal is patent at all levels with no evidence of central canal stenosis. The neural foramina are widely patent without signs of foraminal narrowing or nerve root impingement."
+                        },
+                        "isOptional": false
+                    },
+                    {
+                        "id": "finding_4",
+                        "title": "Facet Joints",
+                        "content": {
+                            "text": "The facet joints appear normal without evidence of hypertrophy, degeneration, or effusion."
+                        },
+                        "isOptional": false
+                    },
+                    {
+                        "id": "finding_5",
+                        "title": "Paraspinal Musculature",
+                        "content": {
+                            "text": "The paraspinal muscles are symmetric without evidence of atrophy or edema."
+                        },
+                        "isOptional": false
+                    },
+                    {
+                        "id": "finding_6",
+                        "title": "Soft Tissues",
+                        "content": {
+                            "text": "The surrounding soft tissues are unremarkable with no evidence of mass or fluid collection."
+                        },
+                        "isOptional": false
+                    }
+                ],
+                "isOptional": false
+            }
+        ]
+    },
+    "dictation": {
+        "transcribedText": "Mass within the left S1/left sacral ala extending into the left L5-S1 neural foramen.  Mass is highly suspicious for metastatic disease with a superimposed infection/abscess formation.  \n\nEpidural abscess along the right posterior lateral spinal canal with mass effect upon thecal sac.\n\nMultilocular/multifocal abscesses containing gas seen within right psoas and left iliacus muscle.   Subcutaneous abscess with left posterior lumbar soft fissues with surrounding cellulitis. \n\nAbnormal signal within left L5-S1 facet joint concerning for facet joint septic arthritis. "
+    },
+    "patientPriorReports": [
+        {
+            "reportDate": "2000-09-01T00:00:00",
+            "examDate": "2000-09-01T00:00:00",
+            "orders": [
+                {
+                    "procedures": [
+                        {
+                            "description": "MRLumbarSpineWcontrast",
+                            "procedureCode": {
+                                "code": "MRLumbarSpineWcontrast"
+                            }
+                        }
+                    ],
+                    "reasonForStudy": [
+                        "dummy_string"
+                    ]
+                }
+            ],
+            "content": "PT ID[xxxxxxxx]\nDOB[xx/xx/xxxx] Gender [Female]\nReason for Exam:  Back Pain\n\nTechnique:  Multiplanar, multisequence imaging of the lumbar spine was performed without the administration of intravenous contrast material.\n\n\nFindings:\n\nVertebral Bodies: The lumbar vertebral bodies are normal in height, alignment, and signal intensity. There is no evidence of compression fracture, bone marrow edema, or pathologic lesion.\nIntervertebral Discs: The intervertebral discs demonstrate normal height and signal intensity for the patient's age. There is no evidence of disc herniation, bulge, or degenerative disc disease.\nSpinal Canal and Neural Foramina: The spinal canal is patent at all levels with no evidence of central canal stenosis. The neural foramina are widely patent without signs of foraminal narrowing or nerve root impingement.\nFacet Joints: The facet joints appear normal without evidence of hypertrophy, degeneration, or effusion.\nParaspinal Musculature: The paraspinal muscles are symmetric without evidence of atrophy or edema.\nSoft Tissues: The surrounding soft tissues are unremarkable with no evidence of mass or fluid collection.\nConclusion:\nNormal MRI of the lumbar spine. "
+        }
+    ]
+}
