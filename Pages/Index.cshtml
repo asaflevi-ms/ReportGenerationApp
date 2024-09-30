@@ -1,0 +1,17 @@
+﻿@page
+@model ReportGenerationApp.Pages.IndexModel
+@{
+    ViewData["Title"] = "Report Generation Test Home page";
+}
+
+<h1>Upload Request (Json) File</h1>
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="jsonFile" />
+    <button type="submit">Upload</button>
+</form>
+
+@if (Model.ResponseContent != null)
+{
+    <h2>Response</h2>
+    <pre>@Model.ResponseContent</pre>
+}
