@@ -56,7 +56,7 @@ namespace ReportGenerationApp.Pages
             // Add the Bearer token to the request headers
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.PostAsync("https://reportgeneration.dev.workspace.mshapis.com/radiology/generate-draft-report", content);
+            var response = await client.PostAsync("https://reportgeneration.test.workspace.mshapis.com/radiology/generate-draft-report", content);
 
             ResponseJson = await response.Content.ReadAsStringAsync();
 
