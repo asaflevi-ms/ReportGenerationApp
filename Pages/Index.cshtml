@@ -9,27 +9,39 @@
     <input type="file" name="JsonFile" onchange="document.getElementById('uploadForm').submit();" />
 </form>
 
+    <div class="button-container" id="buttonContainerBottom">
+        <form method="post" asp-page-handler="GenerateDraftReport" onsubmit="showSpinner()">
+            <button type="submit" disabled>Generate Draft Report</button>
+        </form>
+
+        <form method="post" asp-page-handler="PriorReportSummarization" onsubmit="showSpinner()">
+            <button type="submit" disabled>Prior Report Summarization</button>
+        </form>
+    </div>
+
 @if (Model.InputJson != null || Model.ResponseJson != null)
 {
     <div class="splitter">
         <div class="splitter-left">
             <h2>Input JSON</h2>
-            <pre>@Model.InputJson</pre>
+            <pre id="inputJsonContent">@Model.InputJson</pre>
         </div>
         <div class="splitter-right">
-            <h2>Response JSON</h2>
+            <h2>Response JSON  @Model.LastAction </h2>
             <pre>@Model.ResponseJson</pre>
         </div>
     </div>
 
-    <form method="post" asp-page-handler="GenerateDraftReport" onsubmit="showSpinner()">
-        <button type="submit">Generate Draft Report</button>
-    </form>
+    <div class="button-container" id="buttonContainerBottom">
+        <form method="post" asp-page-handler="GenerateDraftReport" onsubmit="showSpinner()">
+            <button type="submit" disabled>Generate Draft Report</button>
+        </form>
 
-    <form method="post" asp-page-handler="PriorReportSummarization">
-        <button type="submit">Prior Report Summarization</button>
-    </form>
-    
+        <form method="post" asp-page-handler="PriorReportSummarization" onsubmit="showSpinner()">
+            <button type="submit" disabled>Prior Report Summarization</button>
+        </form>
+    </div>
+
     <form method="post" asp-page-handler="Clear">
         <button type="submit">Clear</button>
     </form>
@@ -57,6 +69,11 @@
         max-width: 120ch; /* 120 characters */
         overflow-wrap: break-word;
     }
+        .button-container {
+        display: flex;
+        gap: 10px; /* Add space between buttons */
+        margin-top: 10px; /* Add some margin to the top */
+    }
     .spinner {
         position: fixed;
         top: 50%;
@@ -78,4 +95,16 @@
     function showSpinner() {
         document.getElementById('spinner').style.display = 'block';
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var inputJsonContent = document.getElementById("inputJsonContent")?.innerText.trim();
+        var buttonContainers = document.querySelectorAll(".button-container");
+
+        buttonContainers.forEach(function(container) {
+            var buttons = container.querySelectorAll("button");
+            buttons.forEach(function(button) {
+                button.disabled = !inputJsonContent;
+            });
+        });
+    });
 </script>

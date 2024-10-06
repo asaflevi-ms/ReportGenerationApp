@@ -25,6 +25,8 @@ namespace ReportGenerationApp.Pages
         public string InputJson { get; set; }
         [TempData]
         public string ResponseJson { get; set; }
+        [TempData]
+        public string LastAction { get; set; }
 
         public async Task<IActionResult> OnPostUploadAsync()
         {
@@ -43,16 +45,22 @@ namespace ReportGenerationApp.Pages
             var jsonDocument = JsonDocument.Parse(jsonString);
             InputJson = JsonSerializer.Serialize(jsonDocument, new JsonSerializerOptions { WriteIndented = true });
 
+            // Clear the output (right pane)
+            ResponseJson = null;
+            LastAction = null;
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostGenerateDraftReportAsync()
         {
+            LastAction = "[Draft Report]";
             return await GenerateReportAsync(DraftReportPath);
         }
 
         public async Task<IActionResult> OnPostPriorReportSummarizationAsync()
         {
+            LastAction = "[Prior reports summary]";
             return await GenerateReportAsync(PriorReportSummarizationPath);
         }
 
@@ -103,6 +111,9 @@ namespace ReportGenerationApp.Pages
 
         public void OnGet()
         {
+            InputJson = null;
+            ResponseJson = null;
+            LastAction = null;
         }
     }
 }
