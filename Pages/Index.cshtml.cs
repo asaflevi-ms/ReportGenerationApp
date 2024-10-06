@@ -10,7 +10,8 @@ namespace ReportGenerationApp.Pages
         private readonly TokenService _tokenService;
         private const string Scope = "https://hls-repgen.azure-test.net/.default";
         private const string DraftReportPath = "radiology/generate-draft-report";
-
+        private const string PriorReportSummarizationPath = "radiology/generate-prior-reports-summary";
+        
         public IndexModel(IHttpClientFactory httpClientFactory, TokenService tokenService)
         {
             _httpClientFactory = httpClientFactory;
@@ -47,6 +48,16 @@ namespace ReportGenerationApp.Pages
 
         public async Task<IActionResult> OnPostGenerateDraftReportAsync()
         {
+            return await GenerateReportAsync(DraftReportPath);
+        }
+
+        public async Task<IActionResult> OnPostPriorReportSummarizationAsync()
+        {
+            return await GenerateReportAsync(PriorReportSummarizationPath);
+        }
+
+        private async Task<IActionResult> GenerateReportAsync(string path)
+        {
             if (string.IsNullOrEmpty(InputJson))
             {
                 ModelState.AddModelError(string.Empty, "Please upload a valid JSON file first.");
@@ -67,7 +78,7 @@ namespace ReportGenerationApp.Pages
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
                 // Use the relative path for the request
-                var response = await client.PostAsync(DraftReportPath, content);
+                var response = await client.PostAsync(path, content);
 
                 ResponseJson = await response.Content.ReadAsStringAsync();
             }
