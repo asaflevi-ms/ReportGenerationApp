@@ -3,11 +3,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-// Configure HttpClient with base address
-builder.Services.AddHttpClient("ReportGenerationClient", client =>
+builder.Services.Configure<EnvironmentSettings>(builder.Configuration.GetSection("EnvironmentSettings"));
+EnvironmentSettings environmentSettings = new EnvironmentSettings();
+builder.Configuration.GetSection("EnvironmentSettings").Bind(environmentSettings);
+
+builder.Services.AddHttpClient(environmentSettings!.Dev.Name, client =>
 {
-    client.BaseAddress = new Uri("https://reportgeneration.test.workspace.mshapis.com/");
+    client.BaseAddress = new Uri(environmentSettings!.Dev.Endpoint);
 });
+
+builder.Services.AddHttpClient(environmentSettings!.Test.Name, client =>
+{
+    client.BaseAddress = new Uri(environmentSettings!.Test.Endpoint);
+});
+
+builder.Services.AddHttpClient(environmentSettings!.CI.Name, client =>
+{
+    client.BaseAddress = new Uri(environmentSettings!.CI.Endpoint);
+});
+
+
 
 builder.Services.AddSingleton<TokenService>();
 

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 
 namespace ReportGenerationApp.Pages
 {
@@ -12,10 +13,12 @@ namespace ReportGenerationApp.Pages
         private const string DraftReportPath = "radiology/generate-draft-report";
         private const string PriorReportSummarizationPath = "radiology/generate-prior-reports-summary";
         
-        public IndexModel(IHttpClientFactory httpClientFactory, TokenService tokenService)
+        private readonly EnvironmentSettings _environmentSettings;
+        public IndexModel(IHttpClientFactory httpClientFactory, TokenService tokenService, IOptions<EnvironmentSettings> options)
         {
             _httpClientFactory = httpClientFactory;
             _tokenService = tokenService;
+            _environmentSettings = options.Value;
         }
 
         [BindProperty]
@@ -77,10 +80,13 @@ namespace ReportGenerationApp.Pages
             {
                 using var content = new StringContent(InputJson, System.Text.Encoding.UTF8, "application/json");
 
-                var client = _httpClientFactory.CreateClient("ReportGenerationClient");
+                // environment settings by selectedEnvironment
+                var selectedEnv = GetSelectedEnvironment();
+
+                var client = _httpClientFactory.CreateClient(selectedEnv.Name);
 
                 // Acquire the token using TokenService
-                var token = await _tokenService.GetTokenAsync(new[] { Scope });
+                var token = await _tokenService.GetTokenAsync(new[] { selectedEnv.Scope });
 
                 // Add the Bearer token to the request headers
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
@@ -100,6 +106,17 @@ namespace ReportGenerationApp.Pages
             ResponseJson = JsonSerializer.Serialize(jsonDocument, new JsonSerializerOptions { WriteIndented = true });
 
             return Page();
+        }
+
+        private EnvironmentOptions GetSelectedEnvironment()
+        {
+            var selectedEnvironment = TempData["SelectedEnvironment"]?.ToString() ?? "CI";
+            return selectedEnvironment switch
+            {
+                "Dev" => _environmentSettings.Dev,
+                "Test" => _environmentSettings.Test,
+                _ => _environmentSettings.CI
+            };
         }
 
         public IActionResult OnPostClear()

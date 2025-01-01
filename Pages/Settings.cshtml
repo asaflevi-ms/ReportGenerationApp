@@ -1,0 +1,33 @@
+﻿@page
+@model SettingsModel
+@{
+    ViewData["Title"] = "Settings";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Report Generation Demo App Settings.</p>
+
+<form method="post">
+    <div>
+        <label for="environment">Environment:</label>
+        <select id="environment" name="SelectedEnvironment" asp-for="SelectedEnvironment" asp-items="Model.Environments" onchange="this.form.submit()">
+        </select>
+    </div>
+</form>
+
+
+@if (Model.SelectedEnvironmentOptions != null)
+{
+    <br />
+    <br />
+    <br />
+    <h4>Selected Environment Details</h4>
+    <p><strong>Name:</strong> @Model.SelectedEnvironmentOptions.Name</p>
+    <p><strong>Scope:</strong> @Model.SelectedEnvironmentOptions.Scope</p>
+    <p><strong>Endpoint:</strong> @Model.SelectedEnvironmentOptions.Endpoint</p>
+}
+
+@if (TempData["Message"] != null)
+{
+    <p>@TempData["Message"]</p>
+}
