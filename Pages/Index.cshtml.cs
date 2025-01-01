@@ -91,8 +91,16 @@ namespace ReportGenerationApp.Pages
                 // Add the Bearer token to the request headers
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+                // Add query parameter for API version
+                var uriBuilder = new UriBuilder(client.BaseAddress + path);
+                var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+                query["api-version"] = "2024-08-21-preview";
+                uriBuilder.Query = query.ToString();
+                var requestUri = uriBuilder.ToString();
+                
+                // Use the requestUri for the request
+                var response = await client.PostAsync(requestUri, content);
                 // Use the relative path for the request
-                var response = await client.PostAsync(path, content);
 
                 ResponseJson = await response.Content.ReadAsStringAsync();
             }
