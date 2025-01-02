@@ -45,6 +45,10 @@
     <form method="post" asp-page-handler="Clear">
         <button type="submit">Clear</button>
     </form>
+    <div>
+        <input type="hidden" id="hiddenStatusMessage" value="@Model.StatusMessage" />
+        <textarea id="statusMessages" style="width: 100%;" rows="1" readonly>@Model.StatusMessage</textarea>
+    </div>
 }
 
 <div id="spinner" class="spinner" style="display: none;"></div>
@@ -106,5 +110,9 @@
                 button.disabled = !inputJsonContent;
             });
         });
+
+        // Update the statusMessages textarea with the hiddenStatusMessage value
+        var hiddenStatusMessage = document.getElementById("hiddenStatusMessage").value;
+        document.getElementById("statusMessages").value = hiddenStatusMessage;
     });
 </script>

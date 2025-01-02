@@ -14,15 +14,20 @@ namespace ReportGenerationApp.Pages
         private const string PriorReportSummarizationPath = "radiology/generate-prior-reports-summary";
         
         private readonly EnvironmentSettings _environmentSettings;
-        public IndexModel(IHttpClientFactory httpClientFactory, TokenService tokenService, IOptions<EnvironmentSettings> options)
+        private readonly IConfigurationInfo _configurationInfo;
+
+        public IndexModel(IHttpClientFactory httpClientFactory, TokenService tokenService, IOptions<EnvironmentSettings> options, IConfigurationInfo configurationInfo)
         {
             _httpClientFactory = httpClientFactory;
             _tokenService = tokenService;
             _environmentSettings = options.Value;
+            _configurationInfo = configurationInfo;
         }
 
         [BindProperty]
         public IFormFile JsonFile { get; set; }
+
+        public string StatusMessage { get; set; } = "";
 
         [TempData]
         public string InputJson { get; set; }
@@ -51,6 +56,10 @@ namespace ReportGenerationApp.Pages
             // Clear the output (right pane)
             ResponseJson = null;
             LastAction = null;
+
+            var selectedEnv = _configurationInfo.GetSelectedEnvironment();
+            StatusMessage = $"Env: {selectedEnv.Name}  Request URI: {selectedEnv.Endpoint}  Scope: {selectedEnv.Scope}";
+
 
             return Page();
         }
@@ -81,7 +90,7 @@ namespace ReportGenerationApp.Pages
                 using var content = new StringContent(InputJson, System.Text.Encoding.UTF8, "application/json");
 
                 // environment settings by selectedEnvironment
-                var selectedEnv = GetSelectedEnvironment();
+                var selectedEnv = _configurationInfo.GetSelectedEnvironment();
 
                 var client = _httpClientFactory.CreateClient(selectedEnv.Name);
 
@@ -97,11 +106,10 @@ namespace ReportGenerationApp.Pages
                 query["api-version"] = "2024-08-21-preview";
                 uriBuilder.Query = query.ToString();
                 var requestUri = uriBuilder.ToString();
-                
+
                 // Use the requestUri for the request
                 var response = await client.PostAsync(requestUri, content);
                 // Use the relative path for the request
-
                 ResponseJson = await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -116,21 +124,12 @@ namespace ReportGenerationApp.Pages
             return Page();
         }
 
-        private EnvironmentOptions GetSelectedEnvironment()
-        {
-            var selectedEnvironment = TempData["SelectedEnvironment"]?.ToString() ?? "CI";
-            return selectedEnvironment switch
-            {
-                "Dev" => _environmentSettings.Dev,
-                "Test" => _environmentSettings.Test,
-                _ => _environmentSettings.CI
-            };
-        }
-
+      
         public IActionResult OnPostClear()
         {
             InputJson = null;
             ResponseJson = null;
+            StatusMessage = "";
             return Page();
         }
 

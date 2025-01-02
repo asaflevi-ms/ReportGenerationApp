@@ -1,3 +1,4 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +7,10 @@ builder.Services.AddRazorPages();
 builder.Services.Configure<EnvironmentSettings>(builder.Configuration.GetSection("EnvironmentSettings"));
 EnvironmentSettings environmentSettings = new EnvironmentSettings();
 builder.Configuration.GetSection("EnvironmentSettings").Bind(environmentSettings);
+
+// Register ConfigurationInfo as a singleton service
+builder.Services.AddSingleton<IConfigurationInfo, ConfigurationInfo>();
+
 
 builder.Services.AddHttpClient(environmentSettings!.Dev.Name, client =>
 {
@@ -25,6 +30,7 @@ builder.Services.AddHttpClient(environmentSettings!.CI.Name, client =>
 
 
 builder.Services.AddSingleton<TokenService>();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -43,5 +49,5 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
+app.UseSession();
 app.Run();

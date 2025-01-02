@@ -17,10 +17,13 @@ public class SettingsModel : PageModel
     private readonly EnvironmentSettings _environmentSettings;
     public EnvironmentOptions SelectedEnvironmentOptions { get; set; }
 
-    public SettingsModel(ILogger<SettingsModel> logger, IOptions<EnvironmentSettings> options)
+    private readonly IConfigurationInfo _configurationInfo;
+
+    public SettingsModel(ILogger<SettingsModel> logger, IOptions<EnvironmentSettings> options, IConfigurationInfo configurationInfo)
     {
         _logger = logger;
         _environmentSettings = options.Value;
+        _configurationInfo = configurationInfo;
         Environments = new List<SelectListItem>
         {
             new SelectListItem { Value = _environmentSettings.Dev.Name, Text = _environmentSettings.Dev.Name },
@@ -28,7 +31,7 @@ public class SettingsModel : PageModel
             new SelectListItem { Value = _environmentSettings.CI.Name, Text = _environmentSettings.CI.Name }
         };
 
-        SelectedEnvironment = _environmentSettings.CI.Name;
+        SelectedEnvironment = _configurationInfo.GetSelectedEnvironment().Name;
     }
 
     public void OnGet()
@@ -47,6 +50,7 @@ public class SettingsModel : PageModel
         // Save the selected environment to TempData
         TempData["SelectedEnvironment"] = SelectedEnvironment;
 
+        _configurationInfo.SetSelectedEnvironment(SelectedEnvironment);
         SetSelectedEnvironmentOptions();
 
         return Page();
